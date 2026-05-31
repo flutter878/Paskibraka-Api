@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BiodataController;
 use App\Http\Controllers\Api\DokumenController;
 use App\Http\Controllers\Api\PengumumanController;
+use App\Http\Controllers\Api\AdminPesertaController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -29,5 +30,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/admin/pengumuman/{id}', [PengumumanController::class, 'update']);
     Route::delete('/admin/pengumuman/{id}', [PengumumanController::class, 'destroy']);
 
+    Route::get('/admin/peserta', [AdminPesertaController::class, 'index']);
+    Route::get('/admin/peserta/{id}', [AdminPesertaController::class, 'show']);
+    Route::post('/admin/peserta/{id}/status-akun', [AdminPesertaController::class, 'updateStatusAkun']);
+    Route::post('/admin/peserta/{id}/reset-password', [AdminPesertaController::class, 'resetPassword']);
+    Route::post('/admin/peserta/{id}/verifikasi-biodata', [AdminPesertaController::class, 'verifikasiBiodata']);
+    Route::post('/admin/dokumen/{id}/verifikasi', [AdminPesertaController::class, 'verifikasiDokumen']);
 });
 
