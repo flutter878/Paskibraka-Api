@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\BiodataController;
 use App\Http\Controllers\Api\DokumenController;
 use App\Http\Controllers\Api\PengumumanController;
 use App\Http\Controllers\Api\AdminPesertaController;
+use App\Http\Controllers\Api\KartuPesertaController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -36,5 +37,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/admin/peserta/{id}/reset-password', [AdminPesertaController::class, 'resetPassword']);
     Route::post('/admin/peserta/{id}/verifikasi-biodata', [AdminPesertaController::class, 'verifikasiBiodata']);
     Route::post('/admin/dokumen/{id}/verifikasi', [AdminPesertaController::class, 'verifikasiDokumen']);
+
+    Route::get('/kartu-peserta/preview', [KartuPesertaController::class, 'preview']);
+    Route::get('/kartu-peserta/download', [KartuPesertaController::class, 'download']);
 });
 
