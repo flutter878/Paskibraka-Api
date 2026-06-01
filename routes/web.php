@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PesertaController;
 use App\Http\Controllers\Admin\PengumumanController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\JadwalSeleksiController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -23,4 +24,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/dokumen/{id}/verifikasi', [PesertaController::class, 'verifikasiDokumen'])->name('dokumen.verifikasi');
 
     Route::resource('/pengumuman', PengumumanController::class);
+    Route::resource('/jadwal', JadwalSeleksiController::class);
+
+    Route::get('/cek-laravel', function () {
+    return 'Laravel jalan';
+});
 });

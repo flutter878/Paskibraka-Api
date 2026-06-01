@@ -35,6 +35,9 @@
                     <a href="{{ route('admin.pengumuman.index') }}" class="list-group-item list-group-item-action">
                         Pengumuman
                     </a>
+                    <a href="{{ route('admin.jadwal.index') }}" class="list-group-item list-group-item-action">
+                        Jadwal Seleksi
+                    </a>
                 </div>
             </aside>
 

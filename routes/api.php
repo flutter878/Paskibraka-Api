@@ -7,9 +7,17 @@ use App\Http\Controllers\Api\DokumenController;
 use App\Http\Controllers\Api\PengumumanController;
 use App\Http\Controllers\Api\AdminPesertaController;
 use App\Http\Controllers\Api\KartuPesertaController;
+use App\Http\Controllers\Api\JadwalSeleksiController;
+
+    Route::get('/test', function () {
+    return response()->json([
+        'message' => 'API Laravel berhasil jalan'
+    ]);
+});
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/kartu-peserta/preview-token', [KartuPesertaController::class, 'previewByToken']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', [AuthController::class, 'profile']);
@@ -40,5 +48,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/kartu-peserta/preview', [KartuPesertaController::class, 'preview']);
     Route::get('/kartu-peserta/download', [KartuPesertaController::class, 'download']);
+
+    Route::get('/jadwal-seleksi', [JadwalSeleksiController::class, 'index']);
+    Route::get('/jadwal-seleksi/{id}', [JadwalSeleksiController::class, 'show']);
+
+    Route::get('/admin/jadwal-seleksi', [JadwalSeleksiController::class, 'adminIndex']);
+    Route::post('/admin/jadwal-seleksi', [JadwalSeleksiController::class, 'store']);
+    Route::post('/admin/jadwal-seleksi/{id}', [JadwalSeleksiController::class, 'update']);
+    Route::delete('/admin/jadwal-seleksi/{id}', [JadwalSeleksiController::class, 'destroy']);
+
 });
 
