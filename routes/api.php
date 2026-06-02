@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\PengumumanController;
 use App\Http\Controllers\Api\AdminPesertaController;
 use App\Http\Controllers\Api\KartuPesertaController;
 use App\Http\Controllers\Api\JadwalSeleksiController;
+use App\Http\Controllers\Api\HasilSeleksiController;
 
     Route::get('/test', function () {
     return response()->json([
@@ -57,5 +58,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/admin/jadwal-seleksi/{id}', [JadwalSeleksiController::class, 'update']);
     Route::delete('/admin/jadwal-seleksi/{id}', [JadwalSeleksiController::class, 'destroy']);
 
+    Route::get('/hasil-seleksi', [HasilSeleksiController::class, 'index']);
+    Route::get('/hasil-seleksi/{id}', [HasilSeleksiController::class, 'show']);
+
+    Route::get('/admin/hasil-seleksi', [HasilSeleksiController::class, 'adminIndex']);
+    Route::post('/admin/hasil-seleksi', [HasilSeleksiController::class, 'store']);
+    Route::post('/admin/hasil-seleksi/{id}', [HasilSeleksiController::class, 'update']);
+    Route::delete('/admin/hasil-seleksi/{id}', [HasilSeleksiController::class, 'destroy']);
 });
 

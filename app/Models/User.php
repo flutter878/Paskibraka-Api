@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\HasilSeleksi;
 
 class User extends Authenticatable
 {
@@ -77,4 +78,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Pengumuman::class, 'admin_id');
     }
+
+    public function hasilSeleksi()
+        {
+            return $this->hasMany(HasilSeleksi::class);
+        }
 }
