@@ -1,121 +1,168 @@
 @extends('layouts.admin')
 
+@section('page-title', 'Detail Peserta')
+
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h3>Detail Peserta</h3>
-    <a href="{{ route('admin.peserta.index') }}" class="btn btn-secondary btn-sm">
+    <div>
+        <h3 class="fw-bold mb-1">Detail Peserta</h3>
+        <p class="text-muted mb-0">
+            Lihat biodata, dokumen, dan lakukan verifikasi peserta.
+        </p>
+    </div>
+
+    <a href="{{ route('admin.peserta.index') }}" class="btn btn-outline-danger">
+        <i class="bi bi-arrow-left me-1"></i>
         Kembali
     </a>
 </div>
 
 <div class="row">
-    <div class="col-md-5 mb-3">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-danger text-white">
-                Data Akun
+    <div class="col-lg-4 mb-4">
+        <div class="modern-card p-4">
+            <div class="text-center mb-4">
+                <div style="
+                    width: 86px;
+                    height: 86px;
+                    border-radius: 28px;
+                    background: #fee2e2;
+                    color: #dc2626;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 46px;
+                    margin: 0 auto 14px;
+                ">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+
+                <h4 class="fw-bold mb-1">{{ $peserta->name }}</h4>
+                <p class="text-muted mb-0">{{ $peserta->email }}</p>
             </div>
-            <div class="card-body">
-                <table class="table table-borderless">
-                    <tr>
-                        <th width="160">NIK</th>
-                        <td>: {{ $peserta->nik }}</td>
-                    </tr>
-                    <tr>
-                        <th>Nama</th>
-                        <td>: {{ $peserta->name }}</td>
-                    </tr>
-                    <tr>
-                        <th>Email</th>
-                        <td>: {{ $peserta->email }}</td>
-                    </tr>
-                    <tr>
-                        <th>Status Akun</th>
-                        <td>: {{ ucfirst($peserta->status_akun) }}</td>
-                    </tr>
-                    <tr>
-                        <th>Tanggal Daftar</th>
-                        <td>: {{ $peserta->created_at->format('d-m-Y H:i') }}</td>
-                    </tr>
-                </table>
+
+            <div class="mb-3">
+                <small class="text-muted">NIK</small>
+                <div class="fw-bold">{{ $peserta->nik }}</div>
+            </div>
+
+            <div class="mb-3">
+                <small class="text-muted">Status Akun</small>
+                <div class="mt-1">
+                    @if($peserta->status_akun == 'aktif')
+                        <span class="badge bg-success">Aktif</span>
+                    @elseif($peserta->status_akun == 'nonaktif')
+                        <span class="badge bg-secondary">Nonaktif</span>
+                    @else
+                        <span class="badge bg-warning text-dark">Bermasalah</span>
+                    @endif
+                </div>
+            </div>
+
+            <div>
+                <small class="text-muted">Tanggal Daftar</small>
+                <div class="fw-bold">
+                    {{ $peserta->created_at->format('d-m-Y H:i') }}
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="col-md-7 mb-3">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-danger text-white">
-                Biodata Peserta
-            </div>
-            <div class="card-body">
+    <div class="col-lg-8 mb-4">
+        <div class="modern-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0">
+                    <i class="bi bi-card-checklist text-danger me-2"></i>
+                    Biodata Peserta
+                </h5>
+
                 @if($peserta->biodata)
-                    <table class="table table-borderless">
-                        <tr>
-                            <th width="180">Nama Lengkap</th>
-                            <td>: {{ $peserta->biodata->nama_lengkap }}</td>
-                        </tr>
-                        <tr>
-                            <th>Asal Sekolah</th>
-                            <td>: {{ $peserta->biodata->asal_sekolah }}</td>
-                        </tr>
-                        <tr>
-                            <th>Tempat Lahir</th>
-                            <td>: {{ $peserta->biodata->tempat_lahir }}</td>
-                        </tr>
-                        <tr>
-                            <th>Tanggal Lahir</th>
-                            <td>: {{ \Carbon\Carbon::parse($peserta->biodata->tanggal_lahir)->format('d-m-Y') }}</td>
-                        </tr>
-                        <tr>
-                            <th>Tinggi Badan</th>
-                            <td>: {{ $peserta->biodata->tinggi_badan }} cm</td>
-                        </tr>
-                        <tr>
-                            <th>Berat Badan</th>
-                            <td>: {{ $peserta->biodata->berat_badan }} kg</td>
-                        </tr>
-                        <tr>
-                            <th>Golongan Darah</th>
-                            <td>: {{ $peserta->biodata->golongan_darah ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <th>Riwayat Penyakit</th>
-                            <td>: {{ $peserta->biodata->riwayat_penyakit ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <th>Motivasi Esai</th>
-                            <td>: {{ $peserta->biodata->motivasi_esai ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <th>Status Verifikasi</th>
-                            <td>:
-                                <strong>{{ str_replace('_', ' ', strtoupper($peserta->biodata->status_verifikasi)) }}</strong>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Catatan Admin</th>
-                            <td>: {{ $peserta->biodata->catatan_admin ?? '-' }}</td>
-                        </tr>
-                    </table>
-                @else
-                    <div class="alert alert-warning">
-                        Peserta belum mengisi biodata.
-                    </div>
+                    @if($peserta->biodata->status_verifikasi == 'lulus_verifikasi')
+                        <span class="badge bg-success">Lulus Verifikasi</span>
+                    @elseif($peserta->biodata->status_verifikasi == 'menunggu_verifikasi')
+                        <span class="badge bg-warning text-dark">Menunggu</span>
+                    @elseif($peserta->biodata->status_verifikasi == 'ditolak')
+                        <span class="badge bg-danger">Ditolak</span>
+                    @else
+                        <span class="badge bg-secondary">Belum Lengkap</span>
+                    @endif
                 @endif
             </div>
+
+            @if($peserta->biodata)
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <small class="text-muted">Nama Lengkap</small>
+                        <div class="fw-bold">{{ $peserta->biodata->nama_lengkap }}</div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <small class="text-muted">Asal Sekolah</small>
+                        <div class="fw-bold">{{ $peserta->biodata->asal_sekolah }}</div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <small class="text-muted">Tempat Lahir</small>
+                        <div class="fw-bold">{{ $peserta->biodata->tempat_lahir }}</div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <small class="text-muted">Tanggal Lahir</small>
+                        <div class="fw-bold">
+                            {{ \Carbon\Carbon::parse($peserta->biodata->tanggal_lahir)->format('d-m-Y') }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <small class="text-muted">Tinggi Badan</small>
+                        <div class="fw-bold">{{ $peserta->biodata->tinggi_badan }} cm</div>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <small class="text-muted">Berat Badan</small>
+                        <div class="fw-bold">{{ $peserta->biodata->berat_badan }} kg</div>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <small class="text-muted">Golongan Darah</small>
+                        <div class="fw-bold">{{ $peserta->biodata->golongan_darah ?? '-' }}</div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <small class="text-muted">Riwayat Penyakit</small>
+                        <div class="fw-bold">{{ $peserta->biodata->riwayat_penyakit ?? '-' }}</div>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <small class="text-muted">Motivasi Esai</small>
+                        <div class="fw-bold">{{ $peserta->biodata->motivasi_esai ?? '-' }}</div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <small class="text-muted">Catatan Admin</small>
+                        <div class="fw-bold">{{ $peserta->biodata->catatan_admin ?? '-' }}</div>
+                    </div>
+                </div>
+            @else
+                <div class="alert alert-warning mb-0">
+                    Peserta belum mengisi biodata.
+                </div>
+            @endif
         </div>
     </div>
 </div>
 
 @if($peserta->biodata)
-<div class="card border-0 shadow-sm mb-3">
-    <div class="card-header bg-danger text-white">
+<div class="modern-card p-4 mb-4">
+    <h5 class="fw-bold mb-3">
+        <i class="bi bi-shield-check text-danger me-2"></i>
         Verifikasi Biodata
-    </div>
-    <div class="card-body">
-        <form action="{{ route('admin.peserta.verifikasiBiodata', $peserta->id) }}" method="POST">
-            @csrf
+    </h5>
 
-            <div class="mb-3">
+    <form action="{{ route('admin.peserta.verifikasiBiodata', $peserta->id) }}" method="POST">
+        @csrf
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
                 <label class="form-label">Status Verifikasi</label>
                 <select name="status_verifikasi" class="form-select" required>
                     <option value="belum_lengkap" {{ $peserta->biodata->status_verifikasi == 'belum_lengkap' ? 'selected' : '' }}>
@@ -133,99 +180,118 @@
                 </select>
             </div>
 
-            <div class="mb-3">
+            <div class="col-md-8 mb-3">
                 <label class="form-label">Catatan Admin</label>
-                <textarea name="catatan_admin" class="form-control" rows="3">{{ $peserta->biodata->catatan_admin }}</textarea>
+                <textarea name="catatan_admin" class="form-control" rows="2">{{ $peserta->biodata->catatan_admin }}</textarea>
             </div>
+        </div>
 
-            <button type="submit" class="btn btn-danger">
-                Simpan Verifikasi Biodata
-            </button>
-        </form>
-    </div>
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-save me-1"></i>
+            Simpan Verifikasi Biodata
+        </button>
+    </form>
 </div>
 @endif
 
-<div class="card border-0 shadow-sm">
-    <div class="card-header bg-danger text-white">
-        Dokumen Peserta
+<div class="table-card">
+    <div class="table-card-header">
+        <h5 class="table-card-title">
+            <i class="bi bi-folder-fill text-danger me-2"></i>
+            Dokumen Peserta
+        </h5>
     </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered align-middle">
-                <thead class="table-danger">
+
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Jenis Dokumen</th>
+                    <th>File</th>
+                    <th>Status</th>
+                    <th>Catatan</th>
+                    <th width="330">Verifikasi</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @forelse($peserta->dokumen as $dokumen)
                     <tr>
-                        <th>No</th>
-                        <th>Jenis Dokumen</th>
-                        <th>File</th>
-                        <th>Status</th>
-                        <th>Catatan</th>
-                        <th width="300">Verifikasi</th>
+                        <td>{{ $loop->iteration }}</td>
+
+                        <td>
+                            <div class="fw-bold">
+                                {{ str_replace('_', ' ', strtoupper($dokumen->jenis_dokumen)) }}
+                            </div>
+                            <small class="text-muted">
+                                Upload: {{ $dokumen->created_at->format('d-m-Y H:i') }}
+                            </small>
+                        </td>
+
+                        <td>
+                            <a href="{{ asset('storage/' . $dokumen->file_path) }}" target="_blank" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-file-earmark-text me-1"></i>
+                                Lihat File
+                            </a>
+                        </td>
+
+                        <td>
+                            @if($dokumen->status_dokumen == 'diterima')
+                                <span class="badge bg-success">Diterima</span>
+                            @elseif($dokumen->status_dokumen == 'ditolak')
+                                <span class="badge bg-danger">Ditolak</span>
+                            @elseif($dokumen->status_dokumen == 'revisi')
+                                <span class="badge bg-warning text-dark">Revisi</span>
+                            @else
+                                <span class="badge bg-secondary">Menunggu</span>
+                            @endif
+                        </td>
+
+                        <td>{{ $dokumen->catatan_admin ?? '-' }}</td>
+
+                        <td>
+                            <form action="{{ route('admin.dokumen.verifikasi', $dokumen->id) }}" method="POST">
+                                @csrf
+
+                                <div class="mb-2">
+                                    <select name="status_dokumen" class="form-select form-select-sm" required>
+                                        <option value="menunggu" {{ $dokumen->status_dokumen == 'menunggu' ? 'selected' : '' }}>
+                                            Menunggu
+                                        </option>
+                                        <option value="diterima" {{ $dokumen->status_dokumen == 'diterima' ? 'selected' : '' }}>
+                                            Diterima
+                                        </option>
+                                        <option value="ditolak" {{ $dokumen->status_dokumen == 'ditolak' ? 'selected' : '' }}>
+                                            Ditolak
+                                        </option>
+                                        <option value="revisi" {{ $dokumen->status_dokumen == 'revisi' ? 'selected' : '' }}>
+                                            Revisi
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-2">
+                                    <textarea name="catatan_admin" class="form-control form-control-sm" rows="2" placeholder="Catatan admin">{{ $dokumen->catatan_admin }}</textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-save me-1"></i>
+                                    Simpan
+                                </button>
+                            </form>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    @forelse($peserta->dokumen as $dokumen)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ str_replace('_', ' ', strtoupper($dokumen->jenis_dokumen)) }}</td>
-                            <td>
-                                <a href="{{ asset('storage/' . $dokumen->file_path) }}" target="_blank" class="btn btn-sm btn-outline-danger">
-                                    Lihat File
-                                </a>
-                            </td>
-                            <td>
-                                @if($dokumen->status_dokumen == 'diterima')
-                                    <span class="badge bg-success">Diterima</span>
-                                @elseif($dokumen->status_dokumen == 'ditolak')
-                                    <span class="badge bg-danger">Ditolak</span>
-                                @elseif($dokumen->status_dokumen == 'revisi')
-                                    <span class="badge bg-warning text-dark">Revisi</span>
-                                @else
-                                    <span class="badge bg-secondary">Menunggu</span>
-                                @endif
-                            </td>
-                            <td>{{ $dokumen->catatan_admin ?? '-' }}</td>
-                            <td>
-                                <form action="{{ route('admin.dokumen.verifikasi', $dokumen->id) }}" method="POST">
-                                    @csrf
-
-                                    <div class="mb-2">
-                                        <select name="status_dokumen" class="form-select form-select-sm" required>
-                                            <option value="menunggu" {{ $dokumen->status_dokumen == 'menunggu' ? 'selected' : '' }}>
-                                                Menunggu
-                                            </option>
-                                            <option value="diterima" {{ $dokumen->status_dokumen == 'diterima' ? 'selected' : '' }}>
-                                                Diterima
-                                            </option>
-                                            <option value="ditolak" {{ $dokumen->status_dokumen == 'ditolak' ? 'selected' : '' }}>
-                                                Ditolak
-                                            </option>
-                                            <option value="revisi" {{ $dokumen->status_dokumen == 'revisi' ? 'selected' : '' }}>
-                                                Revisi
-                                            </option>
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-2">
-                                        <textarea name="catatan_admin" class="form-control form-control-sm" rows="2" placeholder="Catatan admin">{{ $dokumen->catatan_admin }}</textarea>
-                                    </div>
-
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        Simpan
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-center text-muted">
-                                Peserta belum mengunggah dokumen.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                @empty
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-5">
+                            <i class="bi bi-folder-x fs-1 d-block mb-2"></i>
+                            Peserta belum mengunggah dokumen.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 </div>
 @endsection
