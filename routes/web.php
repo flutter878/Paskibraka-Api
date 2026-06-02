@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\PesertaController;
 use App\Http\Controllers\Admin\PengumumanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\JadwalSeleksiController;
+use App\Http\Controllers\Admin\HasilSeleksiController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -25,6 +26,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::resource('/pengumuman', PengumumanController::class);
     Route::resource('/jadwal', JadwalSeleksiController::class);
+    Route::resource('/hasil', HasilSeleksiController::class);
 
     Route::get('/cek-laravel', function () {
     return 'Laravel jalan';

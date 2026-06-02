@@ -38,6 +38,9 @@
                     <a href="{{ route('admin.jadwal.index') }}" class="list-group-item list-group-item-action">
                         Jadwal Seleksi
                     </a>
+                    <a href="{{ route('admin.hasil.index') }}" class="list-group-item list-group-item-action">
+                        Hasil Seleksi
+                    </a>
                 </div>
             </aside>
 
