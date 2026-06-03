@@ -371,6 +371,12 @@
                 <span>Hasil Seleksi</span>
             </a>
 
+            <a href="{{ route('admin.laporan.index') }}"
+               class="sidebar-link {{ request()->routeIs('admin.laporan.*') ? 'active' : '' }}">
+                <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                <span>Laporan</span>
+            </a>
+
             <div class="sidebar-menu-title">Akun</div>
 
             <form action="{{ route('logout') }}" method="POST">

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\PengumumanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\JadwalSeleksiController;
 use App\Http\Controllers\Admin\HasilSeleksiController;
+use App\Http\Controllers\Admin\LaporanController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -27,6 +28,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('/pengumuman', PengumumanController::class);
     Route::resource('/jadwal', JadwalSeleksiController::class);
     Route::resource('/hasil', HasilSeleksiController::class);
+
+    Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+    Route::get('/laporan/peserta', [LaporanController::class, 'peserta'])->name('laporan.peserta');
+    Route::get('/laporan/dokumen', [LaporanController::class, 'dokumen'])->name('laporan.dokumen');
+    Route::get('/laporan/hasil', [LaporanController::class, 'hasil'])->name('laporan.hasil');
 
     Route::get('/cek-laravel', function () {
     return 'Laravel jalan';
