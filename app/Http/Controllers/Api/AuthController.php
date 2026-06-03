@@ -81,12 +81,18 @@ class AuthController extends Controller
     }
 
     public function profile(Request $request)
-    {
-        return response()->json([
-            'message' => 'Data profile berhasil diambil',
-            'user' => $request->user()->load('biodata', 'dokumen'),
-        ]);
-    }
+        {
+            return response()->json([
+                'message' => 'Data profile berhasil diambil',
+                'user' => $request->user()->load([
+                    'biodata',
+                    'dokumen',
+                    'hasilSeleksi' => function ($query) {
+                        $query->latest();
+                    }
+                ]),
+            ]);
+        }
 
     public function logout(Request $request)
     {
