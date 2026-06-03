@@ -377,6 +377,12 @@
                 <span>Laporan</span>
             </a>
 
+            <a href="{{ route('admin.admin-user.index') }}"
+            class="sidebar-link {{ request()->routeIs('admin.admin-user.*') ? 'active' : '' }}">
+                <i class="bi bi-person-gear"></i>
+                <span>Kelola Admin</span>
+            </a>
+
             <div class="sidebar-menu-title">Akun</div>
 
             <form action="{{ route('logout') }}" method="POST">
