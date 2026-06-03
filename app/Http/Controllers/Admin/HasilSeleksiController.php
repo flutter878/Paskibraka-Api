@@ -9,11 +9,35 @@ use Illuminate\Http\Request;
 
 class HasilSeleksiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $hasil = HasilSeleksi::with('user')
-            ->latest()
-            ->paginate(10);
+        $query = HasilSeleksi::with('user');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+                $q->where('tahap', 'like', '%' . $search . '%')
+                    ->orWhere('catatan', 'like', '%' . $search . '%')
+                    ->orWhereHas('user', function ($user) use ($search) {
+                        $user->where('name', 'like', '%' . $search . '%')
+                            ->orWhere('nik', 'like', '%' . $search . '%')
+                            ->orWhere('email', 'like', '%' . $search . '%');
+                    });
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('tahap')) {
+            $query->where('tahap', 'like', '%' . $request->tahap . '%');
+        }
+
+        $hasil = $query->latest()
+            ->paginate(10)
+            ->withQueryString();
 
         return view('admin.hasil.index', compact('hasil'));
     }

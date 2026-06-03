@@ -8,12 +8,34 @@ use Illuminate\Http\Request;
 
 class JadwalSeleksiController extends Controller
 {
-    public function index()
-    {
-        $jadwal = JadwalSeleksi::orderBy('tanggal', 'asc')->paginate(10);
+    public function index(Request $request)
+{
+    $query = JadwalSeleksi::query();
 
-        return view('admin.jadwal.index', compact('jadwal'));
+    if ($request->filled('search')) {
+        $search = $request->search;
+
+        $query->where(function ($q) use ($search) {
+            $q->where('nama_kegiatan', 'like', '%' . $search . '%')
+                ->orWhere('lokasi', 'like', '%' . $search . '%')
+                ->orWhere('keterangan', 'like', '%' . $search . '%');
+        });
     }
+
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+
+    if ($request->filled('tanggal')) {
+        $query->whereDate('tanggal', $request->tanggal);
+    }
+
+    $jadwal = $query->orderBy('tanggal', 'asc')
+        ->paginate(10)
+        ->withQueryString();
+
+    return view('admin.jadwal.index', compact('jadwal'));
+}
 
     public function create()
     {

@@ -17,6 +17,67 @@
     </a>
 </div>
 
+<div class="modern-card p-4 mb-4">
+    <form action="{{ route('admin.hasil.index') }}" method="GET">
+        <div class="row align-items-end">
+            <div class="col-md-5 mb-3">
+                <label class="form-label fw-semibold">Cari Hasil Seleksi</label>
+                <input
+                    type="text"
+                    name="search"
+                    class="form-control"
+                    placeholder="Cari nama, NIK, email, tahap, atau catatan..."
+                    value="{{ request('search') }}"
+                >
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <label class="form-label fw-semibold">Tahap Seleksi</label>
+                <input
+                    type="text"
+                    name="tahap"
+                    class="form-control"
+                    placeholder="Contoh: Administrasi"
+                    value="{{ request('tahap') }}"
+                >
+            </div>
+
+            <div class="col-md-2 mb-3">
+                <label class="form-label fw-semibold">Status</label>
+                <select name="status" class="form-select">
+                    <option value="">Semua</option>
+                    <option value="menunggu" {{ request('status') == 'menunggu' ? 'selected' : '' }}>
+                        Menunggu
+                    </option>
+                    <option value="lulus" {{ request('status') == 'lulus' ? 'selected' : '' }}>
+                        Lulus
+                    </option>
+                    <option value="tidak_lulus" {{ request('status') == 'tidak_lulus' ? 'selected' : '' }}>
+                        Tidak Lulus
+                    </option>
+                    <option value="cadangan" {{ request('status') == 'cadangan' ? 'selected' : '' }}>
+                        Cadangan
+                    </option>
+                </select>
+            </div>
+
+            <div class="col-md-2 mb-3">
+                <button type="submit" class="btn btn-danger w-100">
+                    <i class="bi bi-search me-1"></i>
+                    Cari
+                </button>
+            </div>
+        </div>
+
+        @if(request('search') || request('tahap') || request('status'))
+            <a href="{{ route('admin.hasil.index') }}" class="btn btn-light">
+                <i class="bi bi-x-circle me-1"></i>
+                Reset Filter
+            </a>
+        @endif
+    </form>
+</div>
+
 <div class="table-card">
     <div class="table-card-header">
         <h5 class="table-card-title">
@@ -24,9 +85,17 @@
             Daftar Hasil Seleksi
         </h5>
 
-        <span class="badge bg-danger">
-            Total: {{ $hasil->total() }} Data
-        </span>
+        <div class="d-flex gap-2 align-items-center">
+            @if(request('search') || request('tahap') || request('status'))
+                <span class="badge bg-warning text-dark">
+                    Filter Aktif
+                </span>
+            @endif
+
+            <span class="badge bg-danger">
+                Total: {{ $hasil->total() }} Data
+            </span>
+        </div>
     </div>
 
     <div class="table-responsive">
@@ -139,7 +208,7 @@
                     <tr>
                         <td colspan="7" class="text-center text-muted py-5">
                             <i class="bi bi-trophy fs-1 d-block mb-2"></i>
-                            Belum ada data hasil seleksi.
+                            Data hasil seleksi tidak ditemukan.
                         </td>
                     </tr>
                 @endforelse

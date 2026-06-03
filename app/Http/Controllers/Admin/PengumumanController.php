@@ -10,12 +10,29 @@ use Illuminate\Support\Facades\Auth;
 
 class PengumumanController extends Controller
 {
-    public function index()
-    {
-        $pengumuman = Pengumuman::latest()->paginate(10);
+    public function index(Request $request)
+{
+    $query = Pengumuman::query();
 
-        return view('admin.pengumuman.index', compact('pengumuman'));
+    if ($request->filled('search')) {
+        $search = $request->search;
+
+        $query->where(function ($q) use ($search) {
+            $q->where('judul', 'like', '%' . $search . '%')
+                ->orWhere('isi_konten', 'like', '%' . $search . '%');
+        });
     }
+
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+
+    $pengumuman = $query->latest()
+        ->paginate(10)
+        ->withQueryString();
+
+    return view('admin.pengumuman.index', compact('pengumuman'));
+}
 
     public function create()
     {

@@ -10,15 +10,38 @@ use Illuminate\Http\Request;
 
 class PesertaController extends Controller
 {
-    public function index()
-    {
-        $peserta = User::with('biodata')
-            ->where('role', 'peserta')
-            ->latest()
-            ->paginate(10);
+    public function index(Request $request)
+{
+    $query = User::with('biodata')
+        ->where('role', 'peserta');
 
-        return view('admin.peserta.index', compact('peserta'));
+    if ($request->filled('search')) {
+        $search = $request->search;
+
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', '%' . $search . '%')
+                ->orWhere('nik', 'like', '%' . $search . '%')
+                ->orWhere('email', 'like', '%' . $search . '%')
+                ->orWhereHas('biodata', function ($biodata) use ($search) {
+                    $biodata->where('asal_sekolah', 'like', '%' . $search . '%');
+                });
+        });
     }
+
+    if ($request->filled('status_verifikasi')) {
+        $query->whereHas('biodata', function ($biodata) use ($request) {
+            $biodata->where('status_verifikasi', $request->status_verifikasi);
+        });
+    }
+
+    if ($request->filled('status_akun')) {
+        $query->where('status_akun', $request->status_akun);
+    }
+
+    $peserta = $query->latest()->paginate(10)->withQueryString();
+
+    return view('admin.peserta.index', compact('peserta'));
+}
 
     public function show($id)
     {

@@ -12,6 +12,72 @@
     </div>
 </div>
 
+<div class="modern-card p-4 mb-4">
+    <form action="{{ route('admin.peserta.index') }}" method="GET">
+        <div class="row align-items-end">
+            <div class="col-md-5 mb-3">
+                <label class="form-label fw-semibold">Cari Peserta</label>
+                <input
+                    type="text"
+                    name="search"
+                    class="form-control"
+                    placeholder="Cari nama, NIK, email, atau asal sekolah..."
+                    value="{{ request('search') }}"
+                >
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <label class="form-label fw-semibold">Status Verifikasi</label>
+                <select name="status_verifikasi" class="form-select">
+                    <option value="">Semua Status</option>
+                    <option value="belum_lengkap" {{ request('status_verifikasi') == 'belum_lengkap' ? 'selected' : '' }}>
+                        Belum Lengkap
+                    </option>
+                    <option value="menunggu_verifikasi" {{ request('status_verifikasi') == 'menunggu_verifikasi' ? 'selected' : '' }}>
+                        Menunggu Verifikasi
+                    </option>
+                    <option value="lulus_verifikasi" {{ request('status_verifikasi') == 'lulus_verifikasi' ? 'selected' : '' }}>
+                        Lulus Verifikasi
+                    </option>
+                    <option value="ditolak" {{ request('status_verifikasi') == 'ditolak' ? 'selected' : '' }}>
+                        Ditolak
+                    </option>
+                </select>
+            </div>
+
+            <div class="col-md-2 mb-3">
+                <label class="form-label fw-semibold">Status Akun</label>
+                <select name="status_akun" class="form-select">
+                    <option value="">Semua</option>
+                    <option value="aktif" {{ request('status_akun') == 'aktif' ? 'selected' : '' }}>
+                        Aktif
+                    </option>
+                    <option value="nonaktif" {{ request('status_akun') == 'nonaktif' ? 'selected' : '' }}>
+                        Nonaktif
+                    </option>
+                    <option value="bermasalah" {{ request('status_akun') == 'bermasalah' ? 'selected' : '' }}>
+                        Bermasalah
+                    </option>
+                </select>
+            </div>
+
+            <div class="col-md-2 mb-3">
+                <button type="submit" class="btn btn-danger w-100">
+                    <i class="bi bi-search me-1"></i>
+                    Cari
+                </button>
+            </div>
+        </div>
+
+        @if(request('search') || request('status_verifikasi') || request('status_akun'))
+            <a href="{{ route('admin.peserta.index') }}" class="btn btn-light">
+                <i class="bi bi-x-circle me-1"></i>
+                Reset Filter
+            </a>
+        @endif
+    </form>
+</div>
+
 <div class="table-card">
     <div class="table-card-header">
         <h5 class="table-card-title">
@@ -19,9 +85,17 @@
             Daftar Peserta
         </h5>
 
-        <span class="badge bg-danger">
-            Total: {{ $peserta->total() }} Peserta
-        </span>
+        <div class="d-flex gap-2 align-items-center">
+            @if(request('search') || request('status_verifikasi') || request('status_akun'))
+                <span class="badge bg-warning text-dark">
+                    Filter Aktif
+                </span>
+            @endif
+
+            <span class="badge bg-danger">
+                Total: {{ $peserta->total() }} Peserta
+            </span>
+        </div>
     </div>
 
     <div class="table-responsive">
@@ -128,7 +202,7 @@
                     <tr>
                         <td colspan="7" class="text-center text-muted py-5">
                             <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                            Belum ada data peserta.
+                            Data peserta tidak ditemukan.
                         </td>
                     </tr>
                 @endforelse
