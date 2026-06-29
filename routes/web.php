@@ -4,15 +4,20 @@ use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PesertaController;
 use App\Http\Controllers\Admin\PengumumanController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\JadwalSeleksiController;
 use App\Http\Controllers\Admin\HasilSeleksiController;
 use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Admin\AdminUserController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect('/login');
 });
+
+Route::get('/cek-laravel', function () {
+    return 'Laravel jalan';
+});
+
 
 Route::get('/login', [AdminLoginController::class, 'showLogin'])->name('login');
 Route::post('/login', [AdminLoginController::class, 'login'])->name('login.process');
@@ -35,11 +40,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/laporan/dokumen', [LaporanController::class, 'dokumen'])->name('laporan.dokumen');
     Route::get('/laporan/hasil', [LaporanController::class, 'hasil'])->name('laporan.hasil');
 
-    Route::resource('/admin-user', AdminUserController::class);
+    Route::resource('/admin-user', AdminUserController::class)
+        ->parameters([
+            'admin-user' => 'adminUser',
+        ]);
+
     Route::post('/admin-user/{adminUser}/reset-password', [AdminUserController::class, 'resetPassword'])
         ->name('admin-user.resetPassword');
-    Route::resource('/admin-users', AdminUserController::class);
-    Route::get('/cek-laravel', function () {
-    return 'Laravel jalan';
-});
 });

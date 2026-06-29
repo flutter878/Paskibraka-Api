@@ -9,12 +9,14 @@ use App\Http\Controllers\Api\AdminPesertaController;
 use App\Http\Controllers\Api\KartuPesertaController;
 use App\Http\Controllers\Api\JadwalSeleksiController;
 use App\Http\Controllers\Api\HasilSeleksiController;
+use Illuminate\Http\Request;
 
     Route::get('/test', function () {
     return response()->json([
         'message' => 'API Laravel berhasil jalan'
     ]);
 });
+
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
