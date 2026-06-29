@@ -322,6 +322,38 @@
                 display: none;
             }
         }
+
+        /* Pagination icon fix */
+        .pagination .page-link svg {
+            width: 14px;
+            height: 14px;
+            vertical-align: middle;
+        }
+
+        .pagination .page-link {
+            border-radius: 10px;
+            margin: 0 2px;
+            font-size: 14px;
+            padding: 6px 12px;
+            color: var(--primary);
+            border-color: var(--border);
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: var(--text-muted);
+        }
+
+        .pagination .page-link:hover {
+            background-color: var(--primary-soft);
+            color: var(--primary);
+            border-color: var(--border);
+        }
     </style>
 </head>
 
