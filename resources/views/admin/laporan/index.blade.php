@@ -10,6 +10,70 @@
     </p>
 </div>
 
+{{-- Filter Tahun & Bulan --}}
+<div class="modern-card p-4 mb-4">
+    <form action="{{ route('admin.laporan.index') }}" method="GET">
+        <div class="row align-items-end">
+            <div class="col-md-4 mb-3">
+                <label class="form-label fw-semibold">
+                    <i class="bi bi-calendar3 me-1 text-danger"></i>
+                    Filter Tahun
+                </label>
+                <select name="tahun" class="form-select">
+                    <option value="">Semua Tahun</option>
+                    @foreach($tahunList as $thn)
+                        <option value="{{ $thn }}" {{ $tahun == $thn ? 'selected' : '' }}>
+                            {{ $thn }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label class="form-label fw-semibold">
+                    <i class="bi bi-calendar-month me-1 text-danger"></i>
+                    Filter Bulan
+                </label>
+                <select name="bulan" class="form-select">
+                    <option value="">Semua Bulan</option>
+                    @foreach(['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'] as $i => $nama)
+                        <option value="{{ $i + 1 }}" {{ $bulan == ($i + 1) ? 'selected' : '' }}>
+                            {{ $nama }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="d-flex gap-2">
+                    <button class="btn btn-danger flex-fill" type="submit">
+                        <i class="bi bi-funnel me-1"></i>
+                        Terapkan
+                    </button>
+                    @if($tahun || $bulan)
+                        <a href="{{ route('admin.laporan.index') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i>
+                        </a>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        @if($tahun || $bulan)
+            <div class="alert alert-warning py-2 mb-0">
+                <i class="bi bi-info-circle me-1"></i>
+                Menampilkan data
+                @if($bulan)
+                    bulan <strong>{{ ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'][$bulan - 1] }}</strong>
+                @endif
+                @if($tahun)
+                    tahun <strong>{{ $tahun }}</strong>
+                @endif
+            </div>
+        @endif
+    </form>
+</div>
+
 <div class="row">
     <div class="col-md-3 mb-4">
         <div class="stat-card">
@@ -65,7 +129,7 @@
                 </div>
             </div>
 
-            <a href="{{ route('admin.laporan.peserta') }}" class="btn btn-danger w-100">
+            <a href="{{ route('admin.laporan.peserta', array_filter(['tahun' => $tahun, 'bulan' => $bulan])) }}" class="btn btn-danger w-100">
                 <i class="bi bi-file-earmark-text me-1"></i>
                 Buka Laporan Peserta
             </a>
@@ -84,7 +148,7 @@
                 </div>
             </div>
 
-            <a href="{{ route('admin.laporan.dokumen') }}" class="btn btn-danger w-100">
+            <a href="{{ route('admin.laporan.dokumen', array_filter(['tahun' => $tahun, 'bulan' => $bulan])) }}" class="btn btn-danger w-100">
                 <i class="bi bi-file-earmark-text me-1"></i>
                 Buka Laporan Dokumen
             </a>
@@ -103,7 +167,7 @@
                 </div>
             </div>
 
-            <a href="{{ route('admin.laporan.hasil') }}" class="btn btn-danger w-100">
+            <a href="{{ route('admin.laporan.hasil', array_filter(['tahun' => $tahun, 'bulan' => $bulan])) }}" class="btn btn-danger w-100">
                 <i class="bi bi-file-earmark-text me-1"></i>
                 Buka Laporan Hasil
             </a>

@@ -26,12 +26,31 @@
 <div class="modern-card p-4 mb-4 no-print">
     <form action="{{ route('admin.laporan.peserta') }}" method="GET">
         <div class="row align-items-end">
-            <div class="col-md-5 mb-3">
-                <label class="form-label fw-semibold">Cari Peserta</label>
-                <input type="text" name="search" class="form-control" value="{{ request('search') }}" placeholder="Nama, NIK, email, atau asal sekolah">
+            <div class="col-md-3 mb-3">
+                <label class="form-label fw-semibold">Tahun</label>
+                <select name="tahun" class="form-select">
+                    <option value="">Semua Tahun</option>
+                    @foreach($tahunList as $thn)
+                        <option value="{{ $thn }}" {{ request('tahun') == $thn ? 'selected' : '' }}>
+                            {{ $thn }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
 
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3 mb-3">
+                <label class="form-label fw-semibold">Bulan</label>
+                <select name="bulan" class="form-select">
+                    <option value="">Semua Bulan</option>
+                    @foreach(['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'] as $i => $nama)
+                        <option value="{{ $i + 1 }}" {{ request('bulan') == ($i + 1) ? 'selected' : '' }}>
+                            {{ $nama }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="col-md-3 mb-3">
                 <label class="form-label fw-semibold">Status Verifikasi</label>
                 <select name="status_verifikasi" class="form-select">
                     <option value="">Semua Status</option>
@@ -43,11 +62,22 @@
             </div>
 
             <div class="col-md-3 mb-3">
-                <button class="btn btn-danger w-100" type="submit">
-                    <i class="bi bi-search me-1"></i>
-                    Filter
-                </button>
+                <label class="form-label fw-semibold">Cari Peserta</label>
+                <input type="text" name="search" class="form-control" value="{{ request('search') }}" placeholder="Nama, NIK, email...">
             </div>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button class="btn btn-danger" type="submit">
+                <i class="bi bi-search me-1"></i>
+                Filter
+            </button>
+            @if(request('tahun') || request('bulan') || request('status_verifikasi') || request('search'))
+                <a href="{{ route('admin.laporan.peserta') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-x-circle me-1"></i>
+                    Reset
+                </a>
+            @endif
         </div>
     </form>
 </div>
@@ -55,7 +85,16 @@
 <div class="table-card">
     <div class="table-card-header">
         <h5 class="table-card-title">Laporan Data Peserta</h5>
-        <span class="badge bg-danger">Total: {{ $peserta->count() }} Peserta</span>
+        <div class="d-flex gap-2 align-items-center">
+            @if(request('tahun') || request('bulan'))
+                <span class="badge bg-warning text-dark">
+                    <i class="bi bi-calendar3 me-1"></i>
+                    {{ request('bulan') ? \Carbon\Carbon::create()->month(request('bulan'))->translatedFormat('F') : '' }}
+                    {{ request('tahun') }}
+                </span>
+            @endif
+            <span class="badge bg-danger">Total: {{ $peserta->count() }} Peserta</span>
+        </div>
     </div>
 
     <div class="p-4 print-header d-none">

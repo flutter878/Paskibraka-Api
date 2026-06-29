@@ -11,23 +11,48 @@ use Illuminate\Http\Request;
 
 class LaporanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $totalPeserta = User::where('role', 'peserta')->count();
+        $tahun = $request->filled('tahun') ? $request->tahun : null;
+        $bulan = $request->filled('bulan') ? $request->bulan : null;
 
-        $lulusVerifikasi = BiodataPeserta::where('status_verifikasi', 'lulus_verifikasi')->count();
-        $menungguVerifikasi = BiodataPeserta::where('status_verifikasi', 'menunggu_verifikasi')->count();
-        $ditolakVerifikasi = BiodataPeserta::where('status_verifikasi', 'ditolak')->count();
+        // Helper closure untuk filter tahun & bulan
+        $applyDateFilter = function ($query, $table = null) use ($tahun, $bulan) {
+            $col = $table ? "{$table}.created_at" : 'created_at';
+            if ($tahun) {
+                $query->whereYear($col, $tahun);
+            }
+            if ($bulan) {
+                $query->whereMonth($col, $bulan);
+            }
+            return $query;
+        };
 
-        $dokumenDiterima = DokumenPeserta::where('status_dokumen', 'diterima')->count();
-        $dokumenMenunggu = DokumenPeserta::where('status_dokumen', 'menunggu')->count();
-        $dokumenRevisi = DokumenPeserta::where('status_dokumen', 'revisi')->count();
-        $dokumenDitolak = DokumenPeserta::where('status_dokumen', 'ditolak')->count();
+        $pesertaQuery = User::where('role', 'peserta');
+        $applyDateFilter($pesertaQuery);
+        $totalPeserta = $pesertaQuery->count();
 
-        $hasilLulus = HasilSeleksi::where('status', 'lulus')->count();
-        $hasilTidakLulus = HasilSeleksi::where('status', 'tidak_lulus')->count();
-        $hasilCadangan = HasilSeleksi::where('status', 'cadangan')->count();
-        $hasilMenunggu = HasilSeleksi::where('status', 'menunggu')->count();
+        $biodataQuery = BiodataPeserta::query();
+        $applyDateFilter($biodataQuery);
+        $lulusVerifikasi   = (clone $biodataQuery)->where('status_verifikasi', 'lulus_verifikasi')->count();
+        $menungguVerifikasi = (clone $biodataQuery)->where('status_verifikasi', 'menunggu_verifikasi')->count();
+        $ditolakVerifikasi  = (clone $biodataQuery)->where('status_verifikasi', 'ditolak')->count();
+
+        $dokumenQuery = DokumenPeserta::query();
+        $applyDateFilter($dokumenQuery);
+        $dokumenDiterima = (clone $dokumenQuery)->where('status_dokumen', 'diterima')->count();
+        $dokumenMenunggu = (clone $dokumenQuery)->where('status_dokumen', 'menunggu')->count();
+        $dokumenRevisi   = (clone $dokumenQuery)->where('status_dokumen', 'revisi')->count();
+        $dokumenDitolak  = (clone $dokumenQuery)->where('status_dokumen', 'ditolak')->count();
+
+        $hasilQuery = HasilSeleksi::query();
+        $applyDateFilter($hasilQuery);
+        $hasilLulus      = (clone $hasilQuery)->where('status', 'lulus')->count();
+        $hasilTidakLulus = (clone $hasilQuery)->where('status', 'tidak_lulus')->count();
+        $hasilCadangan   = (clone $hasilQuery)->where('status', 'cadangan')->count();
+        $hasilMenunggu   = (clone $hasilQuery)->where('status', 'menunggu')->count();
+
+        $tahunList = $this->getAvailableYears();
 
         return view('admin.laporan.index', compact(
             'totalPeserta',
@@ -41,7 +66,10 @@ class LaporanController extends Controller
             'hasilLulus',
             'hasilTidakLulus',
             'hasilCadangan',
-            'hasilMenunggu'
+            'hasilMenunggu',
+            'tahunList',
+            'tahun',
+            'bulan'
         ));
     }
 
@@ -49,6 +77,14 @@ class LaporanController extends Controller
     {
         $query = User::with('biodata')
             ->where('role', 'peserta');
+
+        if ($request->filled('tahun')) {
+            $query->whereYear('created_at', $request->tahun);
+        }
+
+        if ($request->filled('bulan')) {
+            $query->whereMonth('created_at', $request->bulan);
+        }
 
         if ($request->filled('status_verifikasi')) {
             $query->whereHas('biodata', function ($biodata) use ($request) {
@@ -58,7 +94,6 @@ class LaporanController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->search;
-
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
                     ->orWhere('nik', 'like', '%' . $search . '%')
@@ -69,14 +104,23 @@ class LaporanController extends Controller
             });
         }
 
-        $peserta = $query->latest()->get();
+        $peserta    = $query->latest()->get();
+        $tahunList  = $this->getAvailableYears();
 
-        return view('admin.laporan.peserta', compact('peserta'));
+        return view('admin.laporan.peserta', compact('peserta', 'tahunList'));
     }
 
     public function dokumen(Request $request)
     {
         $query = DokumenPeserta::with('user');
+
+        if ($request->filled('tahun')) {
+            $query->whereYear('created_at', $request->tahun);
+        }
+
+        if ($request->filled('bulan')) {
+            $query->whereMonth('created_at', $request->bulan);
+        }
 
         if ($request->filled('status_dokumen')) {
             $query->where('status_dokumen', $request->status_dokumen);
@@ -86,14 +130,23 @@ class LaporanController extends Controller
             $query->where('jenis_dokumen', $request->jenis_dokumen);
         }
 
-        $dokumen = $query->latest()->get();
+        $dokumen   = $query->latest()->get();
+        $tahunList = $this->getAvailableYears();
 
-        return view('admin.laporan.dokumen', compact('dokumen'));
+        return view('admin.laporan.dokumen', compact('dokumen', 'tahunList'));
     }
 
     public function hasil(Request $request)
     {
         $query = HasilSeleksi::with('user');
+
+        if ($request->filled('tahun')) {
+            $query->whereYear('created_at', $request->tahun);
+        }
+
+        if ($request->filled('bulan')) {
+            $query->whereMonth('created_at', $request->bulan);
+        }
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -103,8 +156,41 @@ class LaporanController extends Controller
             $query->where('tahap', 'like', '%' . $request->tahap . '%');
         }
 
-        $hasil = $query->latest()->get();
+        $hasil     = $query->latest()->get();
+        $tahunList = $this->getAvailableYears();
 
-        return view('admin.laporan.hasil', compact('hasil'));
+        return view('admin.laporan.hasil', compact('hasil', 'tahunList'));
+    }
+
+    /**
+     * Ambil daftar tahun yang tersedia dari semua tabel utama.
+     */
+    private function getAvailableYears(): array
+    {
+        $years = collect();
+
+        $years = $years->merge(
+            User::where('role', 'peserta')
+                ->selectRaw('YEAR(created_at) as tahun')
+                ->distinct()->pluck('tahun')
+        );
+        $years = $years->merge(
+            DokumenPeserta::selectRaw('YEAR(created_at) as tahun')
+                ->distinct()->pluck('tahun')
+        );
+        $years = $years->merge(
+            HasilSeleksi::selectRaw('YEAR(created_at) as tahun')
+                ->distinct()->pluck('tahun')
+        );
+
+        $sorted = $years->filter()->unique()->sortDesc()->values()->toArray();
+
+        // Pastikan tahun ini selalu ada
+        $currentYear = (int) date('Y');
+        if (!in_array($currentYear, $sorted)) {
+            array_unshift($sorted, $currentYear);
+        }
+
+        return $sorted;
     }
 }
