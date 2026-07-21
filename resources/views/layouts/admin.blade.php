@@ -171,15 +171,150 @@
             box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
         }
 
-        .stat-card {
-            background: white;
-            border-radius: 22px;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
-            border: 1px solid rgba(229, 231, 235, 0.7);
-            height: 100%;
-            transition: all 0.2s ease;
+        .dashboard-header,
+        .dashboard-summary {
+            margin-bottom: 24px;
         }
+
+        .dashboard-profile-card,
+        .dashboard-logo-card,
+        .dashboard-stat-card,
+        .dashboard-summary-card {
+            border: 1px solid rgba(229, 231, 235, 0.8);
+            border-radius: 22px;
+            background: #ffffff;
+        }
+
+        .dashboard-profile-card {
+            min-height: 220px;
+        }
+
+        .profile-photo {
+            width: 96px;
+            height: 96px;
+            border-radius: 22px;
+            background: var(--primary-soft);
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+        }
+
+        .profile-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-initial {
+            font-size: 34px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .dashboard-info-item {
+            padding: 18px 16px;
+            background: #f8fafc;
+            border-radius: 16px;
+        }
+
+        .info-title {
+            text-transform: uppercase;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 0.8px;
+            margin-bottom: 6px;
+        }
+
+        .info-value {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .dashboard-logo-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 220px;
+        }
+
+        .dashboard-logo-card img {
+            max-width: 160px;
+            height: auto;
+        }
+
+        .dashboard-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .dashboard-stat-card {
+            min-height: 140px;
+        }
+
+        .dashboard-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            font-size: 18px;
+        }
+
+        .stat-label,
+        .summary-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            margin-bottom: 10px;
+        }
+
+        .stat-number,
+        .summary-number {
+            font-size: 34px;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .dashboard-summary-card {
+            min-height: 130px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .dashboard-summary-card .summary-number {
+            margin-top: 10px;
+        }
+
+        .dashboard-stat-card span.badge {
+            border-radius: 12px;
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .dashboard-profile-card,
+        .dashboard-logo-card,
+        .dashboard-stat-card,
+        .dashboard-summary-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .dashboard-profile-card:hover,
+        .dashboard-logo-card:hover,
+        .dashboard-stat-card:hover,
+        .dashboard-summary-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        .stat-card {
 
         .stat-card:hover {
             transform: translateY(-4px);

@@ -29,6 +29,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/peserta', [PesertaController::class, 'index'])->name('peserta.index');
     Route::get('/peserta/{id}', [PesertaController::class, 'show'])->name('peserta.show');
     Route::post('/peserta/{id}/verifikasi-biodata', [PesertaController::class, 'verifikasiBiodata'])->name('peserta.verifikasiBiodata');
+    Route::post('/peserta/{id}/reset-password', [PesertaController::class, 'resetPassword'])->name('peserta.resetPassword');
+    Route::delete('/peserta/{id}', [PesertaController::class, 'destroy'])->name('peserta.destroy');
     Route::post('/dokumen/{id}/verifikasi', [PesertaController::class, 'verifikasiDokumen'])->name('dokumen.verifikasi');
 
     Route::resource('/pengumuman', PengumumanController::class);

@@ -3,6 +3,15 @@
 @section('page-title', 'Data Peserta')
 
 @section('content')
+
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h3 class="fw-bold mb-1">Data Peserta</h3>
@@ -196,6 +205,93 @@
                                 <i class="bi bi-eye-fill me-1"></i>
                                 Detail
                             </a>
+
+                            <button type="button"
+                                class="btn btn-sm btn-outline-warning"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalResetPassword{{ $item->id }}"
+                                title="Reset Password">
+                                <i class="bi bi-key-fill"></i>
+                            </button>
+
+                            <button type="button"
+                                class="btn btn-sm btn-outline-danger"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalHapus{{ $item->id }}"
+                                title="Hapus Peserta">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+
+                            {{-- Modal Reset Password --}}
+                            <div class="modal fade" id="modalResetPassword{{ $item->id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title fw-bold">
+                                                <i class="bi bi-key-fill text-warning me-2"></i>
+                                                Reset Password
+                                            </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <form action="{{ route('admin.peserta.resetPassword', $item->id) }}" method="POST">
+                                            @csrf
+                                            <div class="modal-body">
+                                                <p class="text-muted mb-3">
+                                                    Reset password untuk <strong>{{ $item->name }}</strong>
+                                                </p>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-semibold">Password Baru</label>
+                                                    <input type="password" name="password" class="form-control" minlength="8" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-semibold">Konfirmasi Password</label>
+                                                    <input type="password" name="password_confirmation" class="form-control" required>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-warning">
+                                                    <i class="bi bi-key-fill me-1"></i>
+                                                    Reset Password
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Modal Hapus --}}
+                            <div class="modal fade" id="modalHapus{{ $item->id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title fw-bold">
+                                                <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
+                                                Konfirmasi Hapus
+                                            </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Yakin ingin menghapus peserta <strong>{{ $item->name }}</strong>?</p>
+                                            <p class="text-danger mb-0">
+                                                <i class="bi bi-exclamation-circle me-1"></i>
+                                                Seluruh data biodata dan dokumen peserta akan ikut terhapus secara permanen.
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                                            <form action="{{ route('admin.peserta.destroy', $item->id) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger">
+                                                    <i class="bi bi-trash-fill me-1"></i>
+                                                    Hapus
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 @empty

@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\BiodataPeserta;
 use App\Models\DokumenPeserta;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class PesertaController extends Controller
 {
@@ -84,5 +85,41 @@ class PesertaController extends Controller
         ]);
 
         return back()->with('success', 'Status dokumen berhasil diperbarui.');
+    }
+
+    public function resetPassword(Request $request, $id)
+    {
+        $peserta = User::where('role', 'peserta')->findOrFail($id);
+
+        $request->validate([
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $peserta->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return back()->with('success', 'Password peserta berhasil direset.');
+    }
+
+    public function destroy($id)
+    {
+        $peserta = User::where('role', 'peserta')->findOrFail($id);
+
+        // Hapus dokumen fisik jika ada
+        if ($peserta->dokumen) {
+            foreach ($peserta->dokumen as $dokumen) {
+                $filePath = storage_path('app/public/' . $dokumen->file_path);
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+            }
+        }
+
+        $peserta->delete();
+
+        return redirect()
+            ->route('admin.peserta.index')
+            ->with('success', 'Peserta berhasil dihapus.');
     }
 }
